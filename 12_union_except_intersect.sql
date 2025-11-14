@@ -40,3 +40,30 @@ FROM film f
 JOIN film_actor fa USING (film_id)
 JOIN actor a USING (actor_id)
 WHERE a.last_name = 'Grant';
+
+SELECT f.title
+FROM film f
+WHERE f.rating = 'G'
+INTERSECT
+SELECT f.title
+FROM film f
+JOIN film_actor fa USING (film_id)
+JOIN actor a USING (actor_id)
+WHERE a.last_name = 'Grant';
+
+
+SELECT f.title
+FROM film f
+JOIN film_actor fa USING (film_id)
+JOIN actor a USING (actor_id)
+WHERE a.last_name = 'Grant'
+EXCEPT
+SELECT f.title
+FROM film f
+WHERE f.rating = 'G';
+
+
+
+
+
+
