@@ -183,3 +183,70 @@ JOIN
 	GROUP BY
 		f.rating) AS fr ON
 	f.rating = fr.rating;
+
+-- Homework
+
+SELECT
+	l."name"
+FROM
+	"language" l
+WHERE
+	NOT EXISTS (
+	SELECT 
+		1
+	FROM
+		film f
+	WHERE
+		f.language_id = l.language_id
+	);
+
+SELECT
+	f.title
+FROM
+	film f
+JOIN film_actor fa
+USING (film_id)
+WHERE
+	fa.actor_id IN (
+	SELECT
+		actor_id
+	FROM
+		actor
+	WHERE
+		last_name LIKE 'Chase%')
+;
+
+SELECT
+	f.title,
+	(
+	SELECT
+		DISTINCT
+		l."name"
+	FROM
+		"language" l
+	JOIN film f2 ON
+		l.language_id = f2.language_id
+	) AS "language"
+FROM
+	film f;
+
+SELECT
+	f.title,
+	f.rental_duration,
+	(
+	SELECT
+		count(f2.title)
+	FROM
+		film f2
+	WHERE
+		f.rental_duration = f2.rental_duration)
+FROM
+	film f
+ORDER BY
+	rental_duration;
+
+SELECT * FROM film
+
+
+
+
