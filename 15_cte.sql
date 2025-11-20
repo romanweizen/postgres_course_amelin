@@ -224,3 +224,36 @@ LEFT JOIN film_amount fa
 ON
 	fa.film_id = fc.film_id
 CROSS JOIN total_amount ta;
+
+-- Homework
+WITH actors_cnt AS (
+SELECT
+	fa.film_id,
+	count(fa.actor_id) AS actor_cnt
+FROM
+	film_actor fa
+GROUP BY
+	fa.film_id),
+amount_sum AS (
+SELECT
+	i.film_id,
+	sum(p.amount) AS amount
+FROM
+	inventory i
+JOIN rental r
+		USING (inventory_id)
+JOIN payment p
+		USING (rental_id)
+GROUP BY
+	i.film_id
+)
+SELECT
+	f.title,
+	ac.actor_cnt,
+	"as".amount
+FROM
+	film f
+JOIN actors_cnt ac
+		USING (film_id)
+JOIN amount_sum "as"
+		USING (film_id)
