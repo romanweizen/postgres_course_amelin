@@ -298,7 +298,55 @@ ORDER BY share_of_sales DESC;
 
 
 
+WITH makers AS (
+SELECT
+	p.maker AS maker
+FROM
+	product p
+JOIN printer pr
+ON
+	p.model = pr.model
+INTERSECT
+SELECT
+	p.maker AS maker
+FROM
+	product p
+JOIN pc pc
+ON
+	p.model = pc.model
+)
+SELECT
+	m.maker AS maker,
+	avg(pc.speed) AS avg_pc_speed
+FROM
+	makers m
+JOIN product p
+ON
+	m.maker = p.maker
+JOIN pc pc
+ON
+	p.model = pc.model
+GROUP BY
+	m.maker;
 
+SELECT
+	p.maker,
+	avg(hd) AS avg_hd_size_pc
+FROM
+	product p
+JOIN pc pc
+ON
+	p.model = pc.model
+WHERE
+	p.maker IN (
+	SELECT
+		p.maker
+	FROM
+		product p
+	JOIN printer pr ON
+		p.model = pr.model)
+GROUP BY
+	p.maker;
 
 
 
