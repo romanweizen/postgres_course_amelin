@@ -226,6 +226,7 @@ ON
 CROSS JOIN total_amount ta;
 
 -- Homework
+
 WITH actors_cnt AS (
 SELECT
 	fa.film_id,
@@ -249,11 +250,55 @@ GROUP BY
 )
 SELECT
 	f.title,
-	ac.actor_cnt,
-	"as".amount
+	COALESCE(ac.actor_cnt, 0) AS actor_cnt,
+	COALESCE(ams.amount, 0) AS amount
 FROM
 	film f
-JOIN actors_cnt ac
+LEFT JOIN actors_cnt ac  -- чтобы отобразить фильмы без актёров
 		USING (film_id)
-JOIN amount_sum "as"
+LEFT JOIN amount_sum ams  -- чтобы отобразить фильмы без продаж
 		USING (film_id)
+
+WITH film_total_sales AS (
+SELECT
+	i.film_id AS film_id,
+	sum(p.amount) AS amount
+FROM
+	inventory i
+JOIN rental r
+		USING (inventory_id)
+JOIN payment p
+		USING (rental_id)
+GROUP BY
+	film_id
+),
+total_sales AS (  -- можно было присоединить верхнее CTE film_total_sales
+SELECT
+	sum(p.amount) AS total_amount
+FROM
+	inventory i
+JOIN rental r
+		USING (inventory_id)
+JOIN payment p
+		USING (rental_id)
+)
+SELECT
+	f.title,
+	COALESCE (fts.amount, 0) AS film_total_amount,
+	COALESCE (ts.total_amount, 0) AS total_amount,
+	COALESCE(round((fts.amount / ts.total_amount * 100), 3), 0) || '%' AS share_of_sales
+FROM
+	film f
+LEFT JOIN film_total_sales fts
+		USING (film_id)
+CROSS JOIN total_sales ts
+ORDER BY share_of_sales DESC;
+
+		
+
+
+
+
+
+
+
