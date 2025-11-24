@@ -120,3 +120,27 @@ FROM
 	
 
 
+-- Homework
+SELECT
+	f.title,
+	sum(f.rental_duration) AS days_amount,
+	count(f.title) OVER (PARTITION BY sum(f.rental_duration)) AS film_count
+FROM film f
+GROUP BY f.title;
+
+SELECT
+	f.title,
+	sum(f.rental_duration) AS days_amount,
+	f.length,
+	ROW_NUMBER() OVER(PARTITION BY f.length ORDER BY f.length DESC) AS rn,
+FROM film f
+GROUP BY f.title, f.length;
+
+
+
+
+
+
+
+
+
