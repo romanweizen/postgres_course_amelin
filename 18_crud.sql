@@ -137,3 +137,64 @@ WHERE
 UPDATE internet_customer
 SET login = 'test_login'
 WHERE first_name = 'Акакий';
+
+
+-- Homework
+DROP TABLE internet_film;
+CREATE TABLE internet_film (
+	internet_film_id serial NOT NULL,
+	title varchar(50) NOT NULL,
+	price float DEFAULT 2 NOT NULL,
+	rental_duration int NOT NULL,
+	description varchar(500)
+);
+
+
+INSERT
+	INTO
+	internet_film (
+	title,
+	price,
+	rental_duration)
+VALUES ('Robocop',
+1.2,
+4),
+('Terminator',
+2,
+3),
+('Godzilla',
+1.5,
+2);
+
+INSERT
+	INTO
+	internet_film (title,
+	rental_duration)
+SELECT
+	f.title,
+	f.rental_duration
+FROM
+	film f
+WHERE
+	f.rating = 'G';
+
+SELECT * FROM internet_film;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
